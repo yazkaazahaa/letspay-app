@@ -5,6 +5,7 @@ use App\Http\Controllers\StudentController;
 use App\Http\Controllers\PaymentController;
 use App\Models\Payment;
 use App\Models\Student;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schema;
 
 // Mengalihkan halaman utama langsung ke rute dashboard sesuai instruksi tugas
@@ -12,9 +13,9 @@ Route::get('/', function () {
     return redirect('/dashboard');
 });
 
-// Registrasi rute resource untuk operasi CRUD lengkap siswa dan pembayaran
-Route::resource('students', StudentController::class);
-Route::resource('payments', PaymentController::class);
+// Registrasi rute resource sesuai method controller yang tersedia
+Route::resource('students', StudentController::class)->except(['show']);
+Route::resource('payments', PaymentController::class)->only(['index', 'store', 'update', 'destroy']);
 
 // Rute dashboard utama dengan proteksi error handling basis data cloud
 Route::get('/dashboard', function () {

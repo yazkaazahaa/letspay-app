@@ -1,11 +1,13 @@
 <?php
 
-// Trik Codex: Memaksa pembuatan folder temporer secara real-time di serverless Vercel
 $paths = [
-    '/tmp/storage/bootstrap/cache',
+    '/tmp/storage/app',
+    '/tmp/storage/logs',
     '/tmp/storage/framework/sessions',
     '/tmp/storage/framework/views',
-    '/tmp/storage/framework/cache'
+    '/tmp/storage/framework/cache',
+    '/tmp/storage/framework/cache/data',
+    '/tmp/bootstrap/cache',
 ];
 
 foreach ($paths as $path) {
@@ -14,12 +16,27 @@ foreach ($paths as $path) {
     }
 }
 
-// Override environment secara absolut agar tidak crash membaca data kosong
-putenv("APP_ENV=production");
-putenv("APP_DEBUG=true");
-putenv("VIEW_COMPILED_PATH=/tmp/storage/framework/views");
-putenv("CACHE_STORE=array");
-putenv("SESSION_DRIVER=cookie");
+$serverlessDefaults = [
+    'APP_ENV' => 'production',
+    'APP_DEBUG' => 'false',
+    'LARAVEL_STORAGE_PATH' => '/tmp/storage',
+    'VIEW_COMPILED_PATH' => '/tmp/storage/framework/views',
+    'APP_SERVICES_CACHE' => '/tmp/bootstrap/cache/services.php',
+    'APP_PACKAGES_CACHE' => '/tmp/bootstrap/cache/packages.php',
+    'APP_CONFIG_CACHE' => '/tmp/bootstrap/cache/config.php',
+    'APP_ROUTES_CACHE' => '/tmp/bootstrap/cache/routes.php',
+    'APP_EVENTS_CACHE' => '/tmp/bootstrap/cache/events.php',
+    'CACHE_STORE' => 'array',
+    'SESSION_DRIVER' => 'cookie',
+    'LOG_CHANNEL' => 'stderr',
+];
 
-// Jalankan file utama public Laravel
+foreach ($serverlessDefaults as $key => $value) {
+    if (getenv($key) === false) {
+        putenv("$key=$value");
+        $_ENV[$key] = $value;
+        $_SERVER[$key] = $value;
+    }
+}
+
 require __DIR__ . '/../public/index.php';

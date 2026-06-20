@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Student;
-use App\Models\Payment;
 use Illuminate\Http\Request;
 
 
@@ -53,14 +52,15 @@ class StudentController extends Controller
             'biaya_bulanan' => 'required|numeric',
         ]);
 
-        $student = Student::create($request->all());
-
-Payment::create([
-    'student_id' => $student->id,
-    'bulan' => now()->format('F'),
-    'tahun' => now()->year,
-    'status' => 'Belum Lunas',
-]);
+        $student->update($request->only([
+            'nama_siswa',
+            'kelas',
+            'nama_wali',
+            'no_hp_wali',
+            'alamat',
+            'biaya_bulanan',
+            'tanggal_jatuh_tempo',
+        ]));
 
         return redirect()->route('students.index')
             ->with('success', 'Data siswa berhasil diupdate');

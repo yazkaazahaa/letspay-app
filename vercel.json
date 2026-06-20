@@ -1,10 +1,25 @@
 {
     "version": 2,
     "framework": null,
+    "buildCommand": "composer install --no-dev --prefer-dist --optimize-autoloader && npm install && npm run build",
     "functions": {
         "api/index.php": {
             "runtime": "vercel-php@0.7.3"
         }
+    },
+    "env": {
+        "APP_ENV": "production",
+        "APP_DEBUG": "false",
+        "CACHE_STORE": "array",
+        "SESSION_DRIVER": "cookie",
+        "LOG_CHANNEL": "stderr",
+        "LARAVEL_STORAGE_PATH": "/tmp/storage",
+        "VIEW_COMPILED_PATH": "/tmp/storage/framework/views",
+        "APP_SERVICES_CACHE": "/tmp/bootstrap/cache/services.php",
+        "APP_PACKAGES_CACHE": "/tmp/bootstrap/cache/packages.php",
+        "APP_CONFIG_CACHE": "/tmp/bootstrap/cache/config.php",
+        "APP_ROUTES_CACHE": "/tmp/bootstrap/cache/routes.php",
+        "APP_EVENTS_CACHE": "/tmp/bootstrap/cache/events.php"
     },
     "routes": [
         {
