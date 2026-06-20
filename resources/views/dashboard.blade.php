@@ -82,11 +82,5 @@
 <h3>Total Siswa</h3>
 <p>{{ $totalStudents }}</p>
 
-<h3>Lunas Bulan Ini</h3>
-<p style="color:green;">{{ $lunas }}</p>
-
-<h3>Belum Lunas Bulan Ini</h3>
-<p style="color:red;">{{ $belum }}</p>
-
 </body>
 </html>
