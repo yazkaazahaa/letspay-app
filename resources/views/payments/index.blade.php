@@ -102,17 +102,25 @@
         <p style="color:green;">{{ session('success') }}</p>
     @endif
 
+    @if($databaseError)
+        <p style="color:#9f1239; background:#ffe4e6; padding:10px; border-radius:6px;">
+            {{ $databaseError }}
+        </p>
+    @endif
+
     <h3>Tambah Pembayaran</h3>
 
     <form method="POST" action="{{ route('payments.store') }}">
         @csrf
 
         <select name="student_id">
-            @foreach($students as $student)
+            @forelse($students as $student)
                 <option value="{{ $student->id }}">
                     {{ $student->nama_siswa }}
                 </option>
-            @endforeach
+            @empty
+                <option value="">Belum ada siswa</option>
+            @endforelse
         </select>
 
         <input type="text" name="bulan" placeholder="Bulan (Juni)">
@@ -123,7 +131,7 @@
             <option value="Belum Lunas">Belum Lunas</option>
         </select>
 
-        <button type="submit">Simpan</button>
+        <button type="submit" @if($students->isEmpty()) disabled @endif>Simpan</button>
     </form>
 
     <br><br>
@@ -137,9 +145,9 @@
             <th>Aksi</th>
         </tr>
 
-        @foreach($payments as $payment)
+        @forelse($payments as $payment)
         <tr>
-            <td>{{ $payment->student->nama_siswa }}</td>
+            <td>{{ $payment->student->nama_siswa ?? 'Siswa tidak ditemukan' }}</td>
             <td>{{ $payment->bulan }}</td>
             <td>{{ $payment->tahun }}</td>
             <td>{{ $payment->status }}</td>
@@ -166,7 +174,13 @@
 
             </td>
         </tr>
-        @endforeach
+        @empty
+        <tr>
+            <td colspan="5" style="text-align:center;">
+                Belum ada data pembayaran untuk periode ini.
+            </td>
+        </tr>
+        @endforelse
 
     </table>
 

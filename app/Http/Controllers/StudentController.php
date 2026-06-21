@@ -4,14 +4,29 @@ namespace App\Http\Controllers;
 
 use App\Models\Student;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Schema;
 
 
 class StudentController extends Controller
 {
     public function index()
     {
-        $students = Student::all();
-        return view('students.index', compact('students'));
+        $students = collect();
+        $databaseError = null;
+
+        try {
+            if (Schema::hasTable('students')) {
+                $students = Student::latest()->get();
+            } else {
+                $databaseError = 'Tabel students belum tersedia. Jalankan migration database production terlebih dahulu.';
+            }
+        } catch (\Throwable $e) {
+            Log::error('Gagal memuat data siswa: ' . $e->getMessage());
+            $databaseError = 'Data siswa belum bisa dimuat. Periksa koneksi database di Vercel.';
+        }
+
+        return view('students.index', compact('students', 'databaseError'));
     }
 
     public function create()
